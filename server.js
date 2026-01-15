@@ -1,10 +1,14 @@
 const express = require('express');
 const app = express();
 const port = 4000;
+
 // convert app to json data
 app.use(express.json());
+
 // Access URL Routes
-app.
+const teacherCoontroller = require("./routes/teacherRoutes");
+app.use("/api/teacher", teacherCoontroller);
+
 // welcome MCR => Model-Controller-Routes
 app.get("/", (req, res) => {
   res.send("Welcome to the Express.js Server with Sequelize ORM!");
