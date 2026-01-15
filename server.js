@@ -6,7 +6,8 @@ const port = 4000;
 app.use(express.json());
 
 // Access URL Routes
-app.use("/api/teacher", require("./routes/teacherRoutes"));
+app.use("/api/v1/teacher", require("./routes/teacherRoutes"));
+app.use("/api/v1/student", require("./routes/studentRoutes"));
 
 // welcome MCR => Model-Controller-Routes
 app.get("/", (req, res) => {
@@ -16,4 +17,6 @@ app.get("/", (req, res) => {
 // startup server
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
+  console.log ('Teacher Routes: http://localhost:4000/api/v1/teacher/getall');
+  console.log ('Student Routes: http://localhost:4000/api/v1/student/getall');
 });

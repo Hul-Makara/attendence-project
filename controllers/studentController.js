@@ -3,7 +3,7 @@ const router = express.Router();
 const Student = require("../models/studentModel");
 
 //  Get all students
-const getStudnts = async (req, res) => {
+const getStudents = async (req, res) => {
     try {
         const students = await Student.findAll();
 
@@ -127,7 +127,7 @@ const deleteStudent = async (req, res) => {
 
 
 module.exports = {
-    getStudnts,
+    getStudents,
     createStudent,
     getStudentById,
     updateStudent,
