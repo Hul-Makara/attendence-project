@@ -9,6 +9,10 @@ const attendance = require("../models/attendentModel");
 //teacher has many attendance
 teacher.hasMany(attendance,{ foreignKey: "teacherid"});
 attendance.belongsTo(teacher,{ foreignKey: "teacherid"});
+//student has many attendance
+Student.hasMany(attendance,{ foreignKey: "studentid"});
+attendance.belongsTo(Student,{ foreignKey: "studentid"});
+
 
 (async () => {
     try {
