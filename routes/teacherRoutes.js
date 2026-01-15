@@ -1,17 +1,17 @@
 const express = require("express");
-const router = express.Router();
-const Teacher = require("../models/teacherModel");
+const {
+    getTeachers,
+    createTeacher,
+    getTeacherById,
+    updateTeacher,
+    deleteTeacher
+} = require("../controllers/teacherController");
 
-// GET ALL
-const getAll = async (req, res) => {
-    try{
-        const teachers = await Teacher.findAll();
-        res.json(teachers);
-    }catch(err){
-        res.status(500).json({ error: err.message });
-    }
-}
+const router = express.Router();    
 
-router.get("/", getAll);
-
+router.get("/", getTeachers);
+router.post("/", createTeacher);    
+router.get("/:id", getTeacherById);
+router.put("/:id", updateTeacher);
+router.delete("/:id", deleteTeacher);
 module.exports = router;

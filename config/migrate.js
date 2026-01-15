@@ -5,6 +5,11 @@ const classes = require("../models/classModel");
 const subject = require("../models/subjectModel");
 const attendance = require("../models/attendentModel");
 
+// Define relationships base on foreign keys
+//teacher has many attendance
+teacher.hasMany(attendance,{ foreignKey: "teacherid"});
+attendance.belongsTo(teacher,{ foreignKey: "teacherid"});
+
 (async () => {
     try {
         await sequelize.authenticate();
