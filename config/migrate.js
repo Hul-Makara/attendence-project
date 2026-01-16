@@ -12,7 +12,9 @@ attendance.belongsTo(teacher,{ foreignKey: "teacherid"});
 //student has many attendance
 Student.hasMany(attendance,{ foreignKey: "studentid"});
 attendance.belongsTo(Student,{ foreignKey: "studentid"});
-
+// classes has many student
+classes.hasMany(Student,{ foreignKey: "classid"});
+attendance.belongsTo(classes,{ foreignKey: "classid"});
 
 (async () => {
     try {
