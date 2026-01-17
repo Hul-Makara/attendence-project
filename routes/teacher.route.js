@@ -1,6 +1,6 @@
 const express = require("express");
 const {
-    getTeachers,
+    getTeacher,
     createTeacher,
     getTeacherById,
     updateTeacher,
@@ -9,7 +9,7 @@ const {
 
 const router = express.Router();    
 
-router.get("/getall", getTeachers);
+router.get("/getall", getTeacher);
 router.post("/create", createTeacher);    
 router.get("/:id", getTeacherById);
 router.put("/update/:id", updateTeacher);

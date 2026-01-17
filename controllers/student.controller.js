@@ -25,11 +25,12 @@ const getStudents = async (req, res) => {
 // create Student
 const createStudent = async (req, res) => {
     try {
-        const { studentname_kh, studentname_en, gender} = req.body;
+        const { studentname_kh, studentname_en, gender, class_id} = req.body;
         const student = await Student.create({
             studentname_kh,
             studentname_en,
-            gender
+            gender,
+            class_id
         });
         res.status(201).json({
             success: true,
@@ -57,7 +58,7 @@ const getStudentById = async (req, res) => {
             });
             
         }
-        
+         
     } catch (error) {
         console.log("Error: ", error);
         res.status(500).json({
@@ -70,7 +71,7 @@ const getStudentById = async (req, res) => {
 // Update Student
 const updateStudent = async ( req, res) => {
     try {
-        const { studentname_kh, studentname_en, ggender} = req.body;
+        const { studentname_kh, studentname_en, gender,class_id} = req.body;
         const student = await Student.findByPk(req.params.id);
         if (!student){
             return res.status(404).json({
@@ -81,7 +82,8 @@ const updateStudent = async ( req, res) => {
         await student.update({
             studentname_kh,
             studentname_en,
-            gender 
+            gender,
+            class_id 
         });
         res.status(200).json({
             success: true,

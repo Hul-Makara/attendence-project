@@ -3,13 +3,13 @@ const router = express.Router();
 const Teacher = require("../models/teacherModel");
 
 // GET ALL Teachers
-const getTeachers = async (req, res) => {
+const getTeacher = async (req, res) => {
     try {
-        const teachers = await Teacher.findAll();
+        const teacher = await Teacher.findAll();
         res.status(200).json({
             success: true,
-            total: teachers.length,
-            data: teachers
+            total: teacher.length,
+            data: teacher
         });
     } catch (err) {
         console.log("Error:", err);
@@ -24,10 +24,11 @@ const getTeachers = async (req, res) => {
 // Create a teacher
 const createTeacher = async (req, res) => {
     try {
-        const { teachername_kh, teachername_en, phone } = req.body;
+        const { teachername_kh, teachername_en,email, phone } = req.body;
         const teacher = await Teacher.create({
             teachername_kh,
             teachername_en,
+            email,
             phone
         });
         res.status(201).json({
@@ -73,7 +74,7 @@ const getTeacherById = async (req, res) => {
 
 const updateTeacher = async (req, res) => {
     try {
-        const { teachername_kh, teachername_en, phone } = req.body;
+        const { teachername_kh, teachername_en, email, phone } = req.body;
         const teacher = await Teacher.findByPk(req.params.id);
 
         if (!teacher) {
@@ -85,6 +86,7 @@ const updateTeacher = async (req, res) => {
         await teacher.update({
             teachername_kh,
             teachername_en,
+            email,
             phone
         });
         res.status(200).json({
@@ -129,7 +131,7 @@ const deleteTeacher = async (req, res) => {
 
 
 module.exports = {
-    getTeachers,
+    getTeacher,
     createTeacher,
     getTeacherById,
     updateTeacher,

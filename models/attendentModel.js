@@ -1,18 +1,39 @@
 const { DataTypes } = require("sequelize");
 const Sequelize = require("sequelize");
 const sequelize = require("../config/db");
+
+
 const attendent = sequelize.define("attendent", {
-    attendentid: {
+    attendent_id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
     },
-    studentid: DataTypes.INTEGER,
-    classid: DataTypes.INTEGER,
-    subjectid: DataTypes.INTEGER,
-    teacherid: DataTypes.INTEGER,
-    attendent_date: Sequelize.DATE,
-    attendent_status: DataTypes.STRING
+    student_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    subject_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    attendent_date: {
+        type: DataTypes.DATEONLY,
+        allowNull: false,
+        defaultValue: DataTypes.NOW
+    },
+    status: {
+        type: DataTypes.STRING(10),
+        allowNull: false,
+        defaultValue: 'Present'
+    },
+    notes: {
+        type: DataTypes.TEXT
+    },
+    create_at: {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW
+    }
 
 }, {
     tableName: 'attendent_tbl',

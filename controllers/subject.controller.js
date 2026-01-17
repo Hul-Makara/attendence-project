@@ -1,19 +1,19 @@
 const express = require('express');
 const router = express.Router();
-const Student = require("../models/subjectModel");
+const subject = require('../models/subjectModel');
 
 //  Get all subject
 const getSubjects = async (req, res) => {
     try {
-        const subjects = await Subject.findAll();
+        const subjects = await subject.findAll();
 
         res.status(200).json({
             success: true,
-            total: s.lengthsubject,
+            total: subjects.length,
             data : subjects
         });
     } catch (error) {
-        console.log("Error:", erroe);
+        console.log("Error:", error);
         res.status(500).json({
             success: false,
             message: "Server error",
@@ -25,9 +25,11 @@ const getSubjects = async (req, res) => {
 // create Subject
 const createSubject = async (req, res) => {
     try {
-        const { subjectname_kh} = req.body;
-        const subject = await Subject.create({
-            subjectname
+        const { subject_name,subject_code,description} = req.body;
+        const subject = await subject.create({
+            subject_name,
+            subject_code,
+            description
         });
         res.status(201).json({
             success: true,
@@ -47,7 +49,7 @@ const createSubject = async (req, res) => {
 // Get subject by id
 const getSubjectById = async (req, res) => {
     try {
-        const subject = await Subject.findByPk(req.param.id);
+        const subject = await subject.findByPk(req.param.id);
         if (!subject){
              res.status(404).json({
                 success: false,
@@ -68,8 +70,8 @@ const getSubjectById = async (req, res) => {
 // Update Subject
 const updateSubject = async ( req, res) => {
     try {
-        const { subjectname} = req.body;
-        const subject = await Subject.findByPk(req.params.id);
+        const { subject_name, subject_code, description} = req.body;
+        const subject = await subject.findByPk(req.params.id);
         if (!subject){
             return res.status(404).json({
                 success: false,
@@ -77,7 +79,9 @@ const updateSubject = async ( req, res) => {
             });
         }
         await subject.update({
-            subjectname,
+            subject_name,
+            subject_code,
+            description
         });
         res.status(200).json({
             success: true,
@@ -97,7 +101,7 @@ const updateSubject = async ( req, res) => {
 // Delete Subject
 const deleteSubject = async (req, res) => {
     try {
-        const subject = await Subject.findByPk(req.params.id);
+        const subject = await subject.findByPk(req.params.id);
         if (!subject){
             return res.status(404).json({
                 success: false,

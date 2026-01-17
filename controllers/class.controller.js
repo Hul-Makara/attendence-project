@@ -24,9 +24,13 @@ const getClasses = async (req, res) => {
 // Create Classes
 const createClasses = async (req,res) => {
     try {
-        const { classname} = req.body;
+        const { class_code,class_year,schedule,room_number,subject_id} = req.body;
         const newClasses = await Classes.create({
-            classname
+            class_code,
+            class_year,
+            schedule,
+            room_number,
+            subject_id
         });
         res.status(201).json({
             success: true,
@@ -69,7 +73,7 @@ const getClassesById = async (req, res) => {
 // Update Classes
 const updateClasses = async (req,res) => {
     try {
-        const {classname} = req.body;
+        const {class_code, class_year,schedule,room_number,subject_id} = req.body;
         const classes = await Classes.findByPk(req.param.id);
         if(!classes){
             return res.status(404).json({
@@ -78,7 +82,11 @@ const updateClasses = async (req,res) => {
             });
         }
         await classes.update({
-            classname
+            class_code,
+            class_year,
+            schedule,
+            room_number,
+            subject_id
         });
         res.status(200).json({
             success: true,
