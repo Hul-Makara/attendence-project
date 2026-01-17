@@ -68,5 +68,60 @@ const getClassesById = async (req, res) => {
 
 // Update Classes
 const updateClasses = async (req,res) => {
-    
+    try {
+        const {classname} = req.body;
+        const classes = await Classes.findByPk(req.param.id);
+        if(!classes){
+            return res.status(404).json({
+                success: false,
+                message: "Class not Found"
+            });
+        }
+        await classes.update({
+            classname
+        });
+        res.status(200).json({
+            success: true,
+            message : "Class Updated successfully",
+            data: classes
+        })
+    } catch (error) {
+        console.log("Error:", error);
+        res.status(500).json({
+            success: false,
+            error : error.message
+        });
+    }
+};
+
+// Delete Teacher 
+const deleteClasses = async (req,res) => {
+    try {
+        const classes = await classes.findByPk(req.params.id);
+        if(!classes){
+            return res.status(404).json({
+                success: false,
+                message: "Class not found"
+            });
+        }
+        await classes.destroy();
+        res.status(200).json({
+            success: true,
+            messsage: "Class deleted Successfyully"
+        });
+    } catch (error) {
+        console.log("Error:", error);
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    }
+};
+
+module.exports ={
+    getClasses,
+    createClasses,
+    getClassesById,
+    updateClasses,
+    deleteClasses
 }

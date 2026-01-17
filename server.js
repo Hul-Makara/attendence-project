@@ -6,8 +6,14 @@ const port = 4000;
 app.use(express.json());
 
 // Access URL Routes
-app.use("/api/v1/teacher", require("./routes/teacherRoutes"));
-app.use("/api/v1/student", require("./routes/studentRoutes"));
+app.use("/api/v1/teacher", require("./routes/teacher.route"));
+app.use("/api/v1/student", require("./routes/student.route"));
+app.use("/api/v1/class", require("./routes/class.route"));
+// app.use("/api/v1/subject", require("./routes/subject.route"));
+// app.use("/api/v1/attendance", require("./routes/attendence.route"));
+
+
+
 
 // welcome MCR => Model-Controller-Routes
 app.get("/", (req, res) => {

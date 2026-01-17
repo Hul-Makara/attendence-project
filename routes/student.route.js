@@ -5,7 +5,7 @@ const {
     getStudentById,
     updateStudent,
     deleteStudent
-} = require('../controllers/studentController');
+} = require('../controllers/student.controller');
 
 const router = express.Router();
 
