@@ -8,7 +8,7 @@ const classes = sequelize.define("class", {
     },
     subject_id: {
         type: DataTypes.INTEGER,
-        allowNullL: true
+        allowNull: true
     },
     class_code: {
         type: DataTypes.STRING(20),

@@ -1,19 +1,19 @@
-const express = require('express');
-const router = express.Router();
+
 const Student = require("../models/studentModel");
 
-//  Get all students
+// Get all students
 const getStudents = async (req, res) => {
     try {
+        // REMOVE the include for now, or fix the association
         const students = await Student.findAll();
 
         res.status(200).json({
             success: true,
             total: students.length,
-            data : students
+            data: students
         });
     } catch (error) {
-        console.log("Error:", erroe);
+        console.log("Error:", error);
         res.status(500).json({
             success: false,
             message: "Server error",
@@ -22,21 +22,31 @@ const getStudents = async (req, res) => {
     }
 };
 
-// create Student
+// Create Student
 const createStudent = async (req, res) => {
     try {
-        const { studentname_kh, studentname_en, gender, class_id} = req.body;
+        const { class_id, studentname_kh, studentname_en, gender } = req.body;
+        
+        // Basic validation
+        if (!studentname_kh || !studentname_en) {
+            return res.status(400).json({
+                success: false,
+                message: "Student name (Khmer and English) is required"
+            });
+        }
+        
         const student = await Student.create({
             studentname_kh,
             studentname_en,
-            gender,
-            class_id
+            gender: gender || null,
+            class_id: class_id || null
         });
+        
         res.status(201).json({
             success: true,
             message: "Student created successfully",
             data: student
-        })
+        });
     } catch (error) {
         console.log("Error:", error);
         res.status(500).json({
@@ -50,52 +60,59 @@ const createStudent = async (req, res) => {
 // Get student by id
 const getStudentById = async (req, res) => {
     try {
-        const student = await Student.findByPk(req.param.id);
-        if (!student){
-             res.status(404).json({
+        const student = await Student.findByPk(req.params.id);
+        
+        if (!student) {
+            return res.status(404).json({
                 success: false,
-                messsage: " student not found"
+                message: "Student not found"
             });
-            
         }
-         
+        
+        res.status(200).json({
+            success: true,
+            data: student
+        });
     } catch (error) {
-        console.log("Error: ", error);
+        console.log("Error:", error);
         res.status(500).json({
             success: false,
-            error : error.messsage
+            error: error.message
         });
     }
 };
 
 // Update Student
-const updateStudent = async ( req, res) => {
+const updateStudent = async (req, res) => {
     try {
-        const { studentname_kh, studentname_en, gender,class_id} = req.body;
+        const { class_id, studentname_kh, studentname_en, gender } = req.body;
         const student = await Student.findByPk(req.params.id);
-        if (!student){
+        
+        if (!student) {
             return res.status(404).json({
                 success: false,
-                message: " Student not found"
+                message: "Student not found"
             });
         }
+        
         await student.update({
-            studentname_kh,
-            studentname_en,
-            gender,
-            class_id 
+            studentname_kh: studentname_kh || student.studentname_kh,
+            studentname_en: studentname_en || student.studentname_en,
+            gender: gender || student.gender,
+            class_id: class_id || student.class_id
         });
+        
         res.status(200).json({
             success: true,
             message: "Student updated successfully",
             data: student
         });
     } catch (error) {
-        console.log("Error: ", error);
+        console.log("Error:", error);
         res.status(500).json({
             success: false,
             message: "Server error",
-            error : error.message
+            error: error.message
         });
     }
 };
@@ -104,26 +121,27 @@ const updateStudent = async ( req, res) => {
 const deleteStudent = async (req, res) => {
     try {
         const student = await Student.findByPk(req.params.id);
-        if (!student){
+        
+        if (!student) {
             return res.status(404).json({
                 success: false,
                 message: "Student not found"
             });
         }
+        
         await student.destroy();
         res.status(200).json({
             success: true,
-            message : "Student deleted successfully"
+            message: "Student deleted successfully"
         });
     } catch (error) {
-        console.log("Error: ", error);
+        console.log("Error:", error);
         res.status(500).json({
             success: false,
             error: error.message
         });
     }
 };
-
 
 module.exports = {
     getStudents,

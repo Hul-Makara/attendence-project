@@ -1,4 +1,5 @@
-const Attendance = require("../models/attendanceModel");
+const Attendance = require("../models/attendenceModel");
+
 const Student = require("../models/studentModel");
 const Teacher = require("../models/teacherModel");
 const Subject = require("../models/subjectModel");
@@ -7,11 +8,11 @@ const Subject = require("../models/subjectModel");
 const getAttendance = async (req, res) => {
     try {
         const attendance = await Attendance.findAll({
-            include: [
-                { model: Student },
-                { model: Teacher },
-                { model: Subject }
-            ]
+            // include: [
+            //     { model: Student },
+            //     { model: Teacher },
+            //     { model: Subject }
+            // ]
         });
 
         res.status(200).json({
@@ -33,6 +34,41 @@ const getAttendance = async (req, res) => {
 const createAttendance = async (req, res) => {
     try {
         const { student_id, teacher_id, subject_id, attendance_date, status, notes } = req.body;
+        
+        // Basic validation
+        if (!student_id || !teacher_id || !subject_id || !attendance_date || !status) {
+            return res.status(400).json({
+                success: false,
+                message: "Missing required fields: student_id, teacher_id, subject_id, attendance_date, and status are required"
+            });
+        }
+        
+        // Check if student exists
+        const studentExists = await Student.findByPk(student_id);
+        if (!studentExists) {
+            return res.status(400).json({
+                success: false,
+                message: "Student not found"
+            });
+        }
+        
+        // Check if teacher exists
+        const teacherExists = await Teacher.findByPk(teacher_id);
+        if (!teacherExists) {
+            return res.status(400).json({
+                success: false,
+                message: "Teacher not found"
+            });
+        }
+        
+        // Check if subject exists
+        const subjectExists = await Subject.findByPk(subject_id);
+        if (!subjectExists) {
+            return res.status(400).json({
+                success: false,
+                message: "Subject not found"
+            });
+        }
 
         const attendance = await Attendance.create({
             student_id,
@@ -40,7 +76,7 @@ const createAttendance = async (req, res) => {
             subject_id,
             attendance_date,
             status,
-            notes
+            notes: notes || null
         });
 
         res.status(201).json({
@@ -130,12 +166,12 @@ const updateAttendance = async (req, res) => {
         }
 
         await attendance.update({
-            student_id,
-            teacher_id,
-            subject_id,
-            attendance_date,
-            status,
-            notes
+            student_id: student_id || attendance.student_id,
+            teacher_id: teacher_id || attendance.teacher_id,
+            subject_id: subject_id || attendance.subject_id,
+            attendance_date: attendance_date || attendance.attendance_date,
+            status: status || attendance.status,
+            notes: notes || attendance.notes
         });
 
         res.status(200).json({

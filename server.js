@@ -10,7 +10,7 @@ app.use("/api/v1/teacher", require("./routes/teacher.route"));
 app.use("/api/v1/student", require("./routes/student.route"));
 app.use("/api/v1/class", require("./routes/class.route"));
 app.use("/api/v1/subject", require("./routes/subject.route"));
-// app.use("/api/v1/attendance", require("./routes/attendence.route"));
+app.use("/api/v1/attendance", require("./routes/attendence.route"));
 
 
 

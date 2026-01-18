@@ -1,3 +1,4 @@
+
 const {DataTypes} = require("sequelize");
 const sequelize = require("../config/db");
 const subject = sequelize.define("subject", {
@@ -26,4 +27,4 @@ const subject = sequelize.define("subject", {
     timestamps: false
 });
 
-module.exports = subject;
+module.exports = subject; // This exports as 'subject'

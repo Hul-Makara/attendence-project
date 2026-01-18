@@ -1,20 +1,31 @@
 const sequelize = require("../config/db");
 const teacher = require("../models/teacherModel");
-const Student = require("../models/studentModel");
+const student = require("../models/studentModel");
 const classes = require("../models/classModel");
-const subject = require("../models/subjectModel");
+const subject = require("../models/subjectModel")
 const attendance = require("../models/attendentModel");
 
 // Define relationships base on foreign keys
-//teacher has many attendance
-teacher.hasMany(attendance,{ foreignKey: "teacherid"});
-attendance.belongsTo(teacher,{ foreignKey: "teacherid"});
-//student has many attendance
-Student.hasMany(attendance,{ foreignKey: "studentid"});
-attendance.belongsTo(Student,{ foreignKey: "studentid"});
-// classes has many student
-classes.hasMany(Student,{ foreignKey: "classid"});
-attendance.belongsTo(classes,{ foreignKey: "classid"});
+
+// Attendance belongs to Student
+attendance.belongsTo(student, { foreignKey: 'student_id' });
+student.hasMany(attendance, { foreignKey: 'student_id' });
+
+// Attendance belongs to Teacher
+attendance.belongsTo(teacher, { foreignKey: 'teacher_id' });
+teacher.hasMany(attendance, { foreignKey: 'teacher_id' });
+
+// Attendance belongs to Subject
+attendance.belongsTo(subject, { foreignKey: 'subject_id' });
+subject.hasMany(attendance, { foreignKey: 'subject_id' });
+
+// Student belongs to Class
+student.belongsTo(classes, { foreignKey: 'class_id' });
+classes.hasMany(student, { foreignKey: 'class_id' });
+
+// Class belongs to Subject
+classes.belongsTo(subject, { foreignKey: 'subject_id' });
+subject.hasMany(classes, { foreignKey: 'subject_id' });
 
 (async () => {
     try {

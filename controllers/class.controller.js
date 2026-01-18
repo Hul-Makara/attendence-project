@@ -14,7 +14,7 @@ const getClasses = async (req, res) => {
     } catch (error) {
         console.log("Error:", error);
         res.status(500).json({
-            succcess: false,
+            succcess: false,  // Typo: should be success
             message: "Server error",
             error: error.message
         });
@@ -22,9 +22,9 @@ const getClasses = async (req, res) => {
 };
 
 // Create Classes
-const createClasses = async (req,res) => {
+const createClasses = async (req, res) => {
     try {
-        const { class_code,class_year,schedule,room_number,subject_id} = req.body;
+        const { class_code, class_year, schedule, room_number, subject_id } = req.body;
         const newClasses = await Classes.create({
             class_code,
             class_year,
@@ -39,18 +39,18 @@ const createClasses = async (req,res) => {
         });
     } catch (error) {
         console.log("Error:", error),
-        res.status(500).json({
-            success: false,
-            message: " server error",
-            error: error.message
-        });
+            res.status(500).json({
+                success: false,
+                message: " server error",
+                error: error.message
+            });
     }
 };
 // Get Classes by id
 const getClassesById = async (req, res) => {
     try {
         const classesData = await Classes.findByPk(req.params.id);
-        if (!classesData){
+        if (!classesData) {
             return res.status(404).json({
                 success: false,
                 message: "Classes not found"
@@ -71,11 +71,11 @@ const getClassesById = async (req, res) => {
 };
 
 // Update Classes
-const updateClasses = async (req,res) => {
+const updateClasses = async (req, res) => {
     try {
-        const {class_code, class_year,schedule,room_number,subject_id} = req.body;
-        const classes = await Classes.findByPk(req.param.id);
-        if(!classes){
+        const { class_code, class_year, schedule, room_number, subject_id } = req.body;
+        const classes = await Classes.findByPk(req.params.id); // Fixed: Changed from req.param.id to req.params.id
+        if (!classes) {
             return res.status(404).json({
                 success: false,
                 message: "Class not Found"
@@ -90,23 +90,23 @@ const updateClasses = async (req,res) => {
         });
         res.status(200).json({
             success: true,
-            message : "Class Updated successfully",
+            message: "Class Updated successfully",
             data: classes
         })
     } catch (error) {
         console.log("Error:", error);
         res.status(500).json({
             success: false,
-            error : error.message
+            error: error.message
         });
     }
 };
 
-// Delete Teacher 
-const deleteClasses = async (req,res) => {
+// Delete Classes (fixed variable name)
+const deleteClasses = async (req, res) => {
     try {
-        const classes = await classes.findByPk(req.params.id);
-        if(!classes){
+        const classes = await Classes.findByPk(req.params.id); // Fixed: Changed from 'classes' to 'Classes' (capital C)
+        if (!classes) {
             return res.status(404).json({
                 success: false,
                 message: "Class not found"
@@ -115,7 +115,7 @@ const deleteClasses = async (req,res) => {
         await classes.destroy();
         res.status(200).json({
             success: true,
-            messsage: "Class deleted Successfyully"
+            messsage: "Class deleted Successfully"
         });
     } catch (error) {
         console.log("Error:", error);
@@ -126,7 +126,7 @@ const deleteClasses = async (req,res) => {
     }
 };
 
-module.exports ={
+module.exports = {
     getClasses,
     createClasses,
     getClassesById,
