@@ -23,6 +23,6 @@ app.get("/", (req, res) => {
 // startup server
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
-  console.log ('Teacher Routes: http://localhost:4000/api/v1/teacher/getall');
-  console.log ('Student Routes: http://localhost:4000/api/v1/student/getall');
+  // console.log ('Teacher Routes: http://localhost:4000/api/v1/teacher/getall');
+  // console.log ('Student Routes: http://localhost:4000/api/v1/student/getall');
 });

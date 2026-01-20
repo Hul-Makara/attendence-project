@@ -1,8 +1,9 @@
 const Attendance = require("../models/attendenceModel");
-
 const Student = require("../models/studentModel");
 const Teacher = require("../models/teacherModel");
 const Subject = require("../models/subjectModel");
+const excelToJson = require('convert-excel-to-json');
+const fs = require('fs-extra');
 
 // Get all attendance records
 const getAttendance = async (req, res) => {
@@ -34,7 +35,7 @@ const getAttendance = async (req, res) => {
 const createAttendance = async (req, res) => {
     try {
         const { student_id, teacher_id, subject_id, attendance_date, status, notes } = req.body;
-        
+
         // Basic validation
         if (!student_id || !teacher_id || !subject_id || !attendance_date || !status) {
             return res.status(400).json({
@@ -42,7 +43,7 @@ const createAttendance = async (req, res) => {
                 message: "Missing required fields: student_id, teacher_id, subject_id, attendance_date, and status are required"
             });
         }
-        
+
         // Check if student exists
         const studentExists = await Student.findByPk(student_id);
         if (!studentExists) {
@@ -51,7 +52,7 @@ const createAttendance = async (req, res) => {
                 message: "Student not found"
             });
         }
-        
+
         // Check if teacher exists
         const teacherExists = await Teacher.findByPk(teacher_id);
         if (!teacherExists) {
@@ -60,7 +61,7 @@ const createAttendance = async (req, res) => {
                 message: "Teacher not found"
             });
         }
-        
+
         // Check if subject exists
         const subjectExists = await Subject.findByPk(subject_id);
         if (!subjectExists) {
@@ -215,11 +216,112 @@ const deleteAttendance = async (req, res) => {
     }
 };
 
+// Upload attendance from Excel
+const uploadAttendance = async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({
+                success: false,     
+                message: "Please upload an Excel file"
+            });
+        }
+
+        const filePath = req.file.path;
+
+        const result = excelToJson({
+            sourceFile: filePath,
+            header: {
+                rows: 1 // Assuming first row is header
+            },
+            columnToKey: {
+                '*': '{{columnHeader}}' // Maps column headers to keys
+            }
+        });
+
+        // Assuming data is in the first sheet
+        const sheetName = Object.keys(result)[0];
+        const rows = result[sheetName];
+
+        const createdRecords = [];
+        const errors = [];
+
+        for (const row of rows) {
+            try {
+                const { student_id, teacher_id, subject_id, attendance_date, status, notes } = row;
+
+                // Basic validation for each row
+                if (!student_id || !teacher_id || !subject_id || !attendance_date || !status) {
+                    errors.push({ row, message: "Missing required fields" });
+                    continue;
+                }
+
+                // Check if student exists
+                const studentExists = await Student.findByPk(student_id);
+                if (!studentExists) {
+                    errors.push({ row, message: `Student ID ${student_id} not found` });
+                    continue;
+                }
+
+                // Check if teacher exists
+                const teacherExists = await Teacher.findByPk(teacher_id);
+                if (!teacherExists) {
+                    errors.push({ row, message: `Teacher ID ${teacher_id} not found` });
+                    continue;
+                }
+
+                // Check if subject exists
+                const subjectExists = await Subject.findByPk(subject_id);
+                if (!subjectExists) {
+                    errors.push({ row, message: `Subject ID ${subject_id} not found` });
+                    continue;
+                }
+
+                const attendance = await Attendance.create({
+                    student_id,
+                    teacher_id,
+                    subject_id,
+                    attendance_date,
+                    status,
+                    notes: notes || null
+                });
+
+                createdRecords.push(attendance);
+            } catch (rowError) {
+                errors.push({ row, message: rowError.message });
+            }
+        }
+
+        // Clean up: delete the uploaded file
+        await fs.remove(filePath);
+
+        res.status(200).json({
+            success: true,
+            message: "Excel file processed successfully",
+            totalProcessed: rows.length,
+            successCount: createdRecords.length,
+            errorCount: errors.length,
+            errors: errors.length > 0 ? errors : undefined
+        });
+
+    } catch (error) {
+        console.log("Error:", error);
+        if (req.file) {
+            await fs.remove(req.file.path);
+        }
+        res.status(500).json({
+            success: false,
+            message: "Server Error during Excel upload",
+            error: error.message
+        });
+    }
+};
+
 module.exports = {
     getAttendance,
     createAttendance,
     getAttendanceByStudent,
     getAttendanceById,
     updateAttendance,
-    deleteAttendance
+    deleteAttendance,
+    uploadAttendance
 };
